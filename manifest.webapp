@@ -1,0 +1,6 @@
+﻿{
+  "name": "HamJump",
+  "description": "<Beschreibung>",
+  "launch_path": "/Hamjump/index.html",
+  "default_locale": "de"
+}

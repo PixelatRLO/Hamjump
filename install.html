@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8" />                  
+  <title>HamJump installieren</title>
+  <script type="text/javascript">
+   function hj_install(){
+    var url = navigator.mozApps.install("http://localhost/Hamjump/manifest.webapp");
+    url.onsuccess = function () {
+     // Save the App object that is returned
+     var appRecord = this.result;
+     alert('Installation successful!');
+    };
+    url.onerror = function () {
+     // Display the error information from the DOMError object
+     alert('Install failed, error: ' + this.error.name);
+    };
+   }
+  </script>
+ </head>
+ <body>
+  <button OnClick="hj_install();">Installieren</button>
+ </body>
+</html>

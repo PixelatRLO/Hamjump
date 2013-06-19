@@ -1,0 +1,564 @@
+﻿<!DOCTYPE html>
+<html>
+ <head>
+  <title>HamJump</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=300" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <script type="text/javascript">
+   var keysDown = {};
+   addEventListener("keydown", function (e){keysDown[e.keyCode] = true;}, false);
+   addEventListener("keyup", function (e){delete keysDown[e.keyCode];}, false);   
+  </script>
+  <style type="text/css">
+   *{font-family: Arial;font-size: 15px;}
+   .thead{background: #B78E3C; width: 290px; color: #FFAA00 !important; padding-left: 10px;}
+   table{background: #FFD42A; text-align: center; width: 300px; margin-top: -26px;}
+   #overlab{margin-top: -500px; width: 300px; height: 500px;}
+   #overlab, #overlab *{position: relative;z-index: 2;}
+   #overlab button{
+    background: #FFD42A;
+    border: 2px solid #B78E3C;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 30px;
+    opacity: 0.8;
+    transform: rotate(5deg);
+    -ms-transform: rotate(5deg);             
+    -moz-transform: rotate(5deg);
+    -o-transform: rotate(5deg);
+    -webkit-transform: rotate(5deg);
+    padding: 1px 10px;
+   }
+   #overlab h1, #overlab h2, #overlab h3, #overlab h4, #overlab h5, #overlab h6{color: #FF7F00;}
+   #overlab h1{font-size: 60px;} #overlab h2{font-size: 40px;} #overlab h3{font-size: 25px;}
+   #overlab h4{font-size: 20px;} #overlab h5{font-size: 15px;} #overlab h6{font-size: 10px;} 
+   #startbtn{
+    font-size: 60px !important;
+    top: 150px;
+    left: 75px;
+    border-radius: 30px !important;
+   }
+   #retrybtn{
+    font-size: 50px !important;
+    top: 30px;
+    left: 30px;
+    border-radius: 25px !important;
+   }
+   #menubtn{top: 100px; left: 40px;}
+   #prefbtn{top: 250px; left: 45px;} 
+   #menubtn, #prefbtn{
+    transform: rotate(9deg) !important;
+    -ms-transform: rotate(9deg) !important;
+    -moz-transform: rotate(9deg) !important;
+    -o-transform: rotate(9deg) !important;
+    -webkit-transform: rotate(9deg) !important;
+   } 
+   #hud{                                                  
+    background: #FFD42A;
+    border-bottom: 2px solid #B78E3C;
+    width: 290px;
+    height: 20px;
+    padding: 3px 5px;  
+   }
+  </style>
+ </head>
+ <body>
+  <div id="hud">
+   <span id="score">0</span>
+  </div>
+  <canvas id="hamjump" width="300" height="500">
+  Dein Browser unterstützt noch nicht dieses Spiel.
+  </canvas>
+  <div id="overlab">
+  </div>
+  Version 1.4.1 &beta; 
+  <script type="text/javascript">
+   function rand(min, max){
+	  return Math.random() * (max - min + 1) + min;
+   }
+   function randint(min,max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+   }
+   var hamjump = {
+    context: document.getElementById("hamjump").getContext("2d"), 
+    bg: document.getElementById("hamjump").getContext("2d").createLinearGradient(0, 0, 0, 500),
+    image: {
+     ham: {
+      act: "left",
+     },
+     monster: {
+     
+     },
+    },
+    ham: {},
+    block: {
+     x: [],    
+     y: [],
+     xl: [],        
+     xr: [],      
+     dx: [],
+     type: [],         
+     visible: [],
+     generate: function(){
+      with(hamjump){
+       /*hamjump.zone.monsteranz.splice(0, 1);
+       hamjump.monster.x.splice(0, hamjump.zone.monsteranz[0]);
+       hamjump.monster.y.splice(0, hamjump.zone.monsteranz[0]);
+       hamjump.monster.visible.splice(0, hamjump.zone.monsteranz[0]);
+       hamjump.zone.monsteranz[2] = randint(0, hamjump.zone.monsteranz[1] + 2);
+       i = hamjump.zone.monsteranz[0] + hamjump.zone.monsteranz[1];
+       hamjump.monster.anz = i + hamjump.zone.monsteranz[2];
+       var indexstart = hamjump.zone.blockanz[0] + hamjump.zone.blockanz[1];
+       var indexend = indexstart + hamjump.zone.blockanz[2];
+       for(; i < hamjump.monster.anz; i++){
+        var index = randint(indexstart, indexend);
+        while(hamjump.block.type[index] != 1){
+         index++;
+         if(index > indexend) index = indexstart;
+        }
+        hamjump.monster.x[i] = hamjump.block.x[index] + 12.5;
+        hamjump.monster.y[i] = hamjump.block.y[index] - 52;
+        hamjump.monster.visible[i] = true;
+       }*/
+       switch(zone.act){
+        case  1: block.x[0] = 112.5;
+                 block.y[0] = 470;
+                 block.type[0] = 1;
+                 block.dx[0] = "";
+                 block.xl[0] = "";
+                 block.xr[0] = "";
+                 block.visible[0] = true;
+                 var i = 1;
+                 block.anz = 29;
+                 monster.anz = 0; 
+                 break;
+        case  2: var i = 29;
+                 block.anz = 45;
+                 monster.anz = 1;
+                 break;
+        default: block.x.splice(0, hamjump.zone.blockanz[0]);
+                 block.y.splice(0, hamjump.zone.blockanz[0]);
+                 block.type.splice(0, hamjump.zone.blockanz[0]);
+                 block.dx.splice(0, hamjump.zone.blockanz[0]);
+                 block.xl.splice(0, hamjump.zone.blockanz[0]);
+                 block.xr.splice(0, hamjump.zone.blockanz[0]);
+                 block.visible.splice(0, hamjump.zone.blockanz[0]);
+                 zone.blockanz.splice(0, 1);
+                 zone.blockanz[2] = hamjump.zone.blockanz[1] + 1;
+                 monster.x.splice(0, hamjump.zone.monsteranz[0]);
+                 monster.y.splice(0, hamjump.zone.monsteranz[0]);
+                 monster.type.splice(0, hamjump.zone.monsteranz[0]);
+                 monster.visible.splice(0, hamjump.zone.monsteranz[0]);
+                 monster.anz -= zone.monsteranz[0];
+                 zone.monsteranz.splice(0, 1);
+                 zone.monsteranz[2] = hamjump.zone.monsteranz[1] + 1;
+                 var i = (zone.blockanz[0] * 2) + 1;
+                 block.anz = (zone.blockanz[0] * 3) + 3;        
+                 break;
+       }
+       for(; i < block.anz; i++){
+        //Typ festlegen
+        hamjump.block.type[i] = randint(1,8);                 
+        if(block.type[i] < 6 ||(block.type[i] > 4 && block.type[i] < 7 && block.type[i-1] == 2)){
+         block.x[i] = rand(0, 225);
+         block.dx[i] = "";
+         block.xl[i] = "";
+         block.xr[i] = "";
+         if(block.type[i-1] == 2) block.y[i] = block.y[i-2] - rand(90, 110);
+         else block.y[i] = block.y[i-1] - rand(90, 110);
+         if(block.type[i] == 5 && (zone.monsteranz[0] * 3) + 3 > monster.anz){
+          monster.x[monster.anz] = block.x[i] + 12.5;
+          monster.y[monster.anz] = block.x[i] - 52;
+          monster.type[monster.anz] = "normal";
+          monster.visible[monster.anz] = true;
+          monster.anz++;
+         }
+         block.type[i] = 1;
+        }
+        if(block.type[i] > 5 && block.type[i] < 8 && block.type[i-1] != 2){
+         block.type[i] = 2;
+         block.x[i] = rand(0, 225);
+         block.dx[i] = "";
+         block.xl[i] = "";
+         block.xr[i] = "";
+         block.y[i] = block.y[i-1] - rand(30, 50);
+         block.anz++;
+        }  
+        if(block.type[i] == 8){
+         block.type[i] = 3;
+         block.dx[i] = rand(1, 2);
+         block.xl[i] = rand(0, 100);
+         block.xr[i] = rand(block.xl[i] + 100, 225);
+         block.x[i] = rand(block.xl[i], block.xr[i]);
+         if(block.type[i-1] == 2) block.y[i] = block.y[i-2] - rand(90, 110);
+         else block.y[i] = block.y[i-1] - rand(90, 110);
+        }
+        hamjump.block.visible[i] = true;  
+       }
+       switch(zone.act){
+        case 1: hamjump.zoneline = hamjump.block.y[13] - 40; break;
+        default: hamjump.zoneline = hamjump.block.y[(hamjump.zone.blockanz[0] * 2)] - 40;
+                 break;
+       }
+      }
+     } 
+    },
+    monster: {
+     x: [],
+     y: [],
+     type: [],
+     visible: [],
+    },
+    fireball: {
+     x: [],
+     y: [],
+     dx: [],
+     dy: [],
+     shooted: false,
+     anz: 0,
+    },
+    zone: {
+     blockanz: [],
+     monsteranz: [],
+    },
+    zoneline: -10,
+    jump: {},
+    key: {
+     left: 37,
+     right: 39,
+     shootl: 65,
+     shootc: 83,
+     shootr: 68,
+     start: 32,
+    },
+    draw: function (){
+     with(hamjump){
+      context.clearRect(0, 0, 300, 500);
+      context.fillStyle = bg;
+      context.fillRect(0, 0, 300, 500);
+      for(var i = 0; i <= block.anz; i++){
+       switch(block.type[i]){
+        case 1: context.fillStyle = "rgba(0, 255, 50, 0.8)"; break;
+        case 2: context.fillStyle = "rgba(21, 21, 152, 0.8)";break;
+        case 3: context.fillStyle = "rgba(255, 127, 0, 0.8)";break;
+       }
+       if(block.visible[i]) context.fillRect(block.x[i], block.y[i], 75, 20);
+      }
+      for(i = 0; i < monster.anz; i++)
+       if(monster.visible[i])
+        context.drawImage(image.monster[monster.type[i]], monster.x[i], monster.y[i], 50, 50);
+      context.drawImage(image.ham[image.ham.act], ham.x, ham.y, 100, 70);
+      context.fillStyle = "#5A55FF";
+      context.fillRect(0, zoneline, 300, 5);
+      context.font = "20pt Arial";
+      context.fillText("Zone " + (zone.act + 1), 0, zoneline - 10);
+      context.fillStyle = "#FF552A";
+      for(i = 0; i < fireball.anz; i++){
+       context.beginPath();
+       context.arc(fireball.x[i], fireball.y[i], 20, 0, Math.PI * 2, true);
+       context.closePath();context.fill();
+      }
+     }
+    },
+    reset: function (site){
+     switch(site){
+      case "menu": var innerHTML = "<button id='startbtn' OnClick='hamjump.reset(\"game\");'>"+
+                   "Start</button>";
+                   hamjump.site = "menu";   
+                   with(hamjump){
+                    if(typeof(interval) != 'undefined') clearInterval(interval);
+                    interval = setInterval("hamjump.screen()", 5);
+                    ham.x = 100;
+                    ham.y = 400;
+                    block.x[0] = 112.5;    
+                    block.y[0] = 470;
+                    block.anz = 1;
+                    block.xl[0] = block.xr[0] = block.dx[0] = "";        
+                    block.type[0] = 1;         
+                    block.visible[0] = true;
+                    monster.anz = 0;
+                    jump.height = rand(190, 210);
+                    jump.jumped = 0;
+                    jump.falled = 0; 
+                   }
+                   hamjump.score = 0;
+                   document.getElementById("score").innerHTML = 0;
+                   break;
+      case "lose": var innerHTML = "<h1>Verloren!</h1>" +
+                   "<h4>Deine Punktzahl: "+Math.floor(hamjump.score)+"</h4>" +
+                   "<button id='retrybtn' OnClick='hamjump.reset(\"game\");'>Nochmal</button>" +
+                   "<button id='menubtn' OnClick='hamjump.reset(\"menu\");'>Hauptmen&uuml;</button>";
+                   with(hamjump){
+                    site = "lose";
+                    ham.y = 0;
+                    block.x.splice(0, block.anz);
+                    block.y.splice(0, block.anz);
+                    block.xl.splice(0, block.anz);
+                    block.xr.splice(0, block.anz);
+                    block.dx.splice(0, block.anz);
+                    block.dx.splice(0, block.anz);
+                    block.type.splice(0, block.anz);
+                    block.visible.splice(0, block.anz);
+                    block.anz = 0;
+                    monster.x.splice(0, monster.anz);
+                    monster.y.splice(0, monster.anz);
+                    monster.visible.splice(0, monster.anz);
+                    monster.anz = 0;
+                   }break;
+      case "game": var innerHTML = "";
+                   with(hamjump){
+                    site = "game";
+                    ham.x = 100;
+                    ham.y = 400;
+                    zone.act = 1;
+                    zone.blockanz = [14, 15, 16];
+                    zone.monsteranz = [0, 0, 1];
+                    block.generate();
+                    clearInterval(interval);
+                    interval = setInterval("hamjump.main();", 5);
+                   }
+                   hamjump.score = 0;
+                   document.getElementById("score").innerHTML = 0;
+                   break;
+     }
+     document.getElementById("overlab").innerHTML = innerHTML;
+    },
+    screen: function (){
+     if(keysDown[hamjump.key.start] && hamjump.site == "menu")
+      hamjump.reset("game");
+     with(hamjump){
+      if(jump.jumped < jump.height){
+       var step = jump_easing(jump.jumped, jump.height);
+       ham.y -= step;
+       jump.jumped += step;
+      } else {                      
+       if(ham.y >= 400){
+        jump.jumped = 0;
+        jump.falled = 0;
+        jump.height = rand(190, 210);
+        if(site == "game"){
+         clearInterval(interval);
+         interval = setInterval("hamjump.main()", 5);
+         return 0;
+        }
+       }
+       if(jump.jumped != 0){
+        var step = jump_easing(jump.falled, 200);
+        ham.y += step;
+        jump.falled += step;
+       }  
+      }
+     }
+    },
+    main: function(){
+     with(hamjump){
+      //Block
+      for(var i = 0; i <= block.anz; i++){
+       switch(block.type[i]){
+        case 3: if(block.x[i] <= block.xl[i])
+                 block.dx[i] = -block.dx[i];
+                if(block.x[i] >= block.xr[i])
+                 block.dx[i] = -block.dx[i];
+                block.x[i] += block.dx[i];
+                break;
+       }
+      }
+      //Monster
+      for(i = 0; i < monster.anz; i++){
+       if(monster.visible[i]){
+        if(ham.x + 100 >= monster.x[i] && ham.x <= monster.x[i] + 50){
+         if(ham.y + 40 >= monster.y[i] && ham.y <= monster.y[i] + 50){
+          bg.addColorStop(0, "#FFFF7F");
+          reset("lose");
+          clearInterval(interval);
+          interval = setInterval("hamjump.lose()", 5);
+          return 0;
+         }
+        }
+       }
+      }
+      //Zoneline
+      if(ham.y <= zoneline){
+       zone.act++;
+       block.generate();
+       bg.addColorStop(0, "rgb("+randint(0,255)+","+randint(0,255)+","+randint(0,255)+")");
+      }
+      //Ham
+      if(ham.y >= 490){
+       bg.addColorStop(0, "#FFFF7F");
+       reset("lose");
+       clearInterval(interval);
+       interval = setInterval("hamjump.lose()", 5);
+       return 0;
+      }
+      if(keysDown[key.left]){
+       ham.x--;
+       if(ham.x < -40) ham.x = -40;
+       image.ham.act = "left";
+      }
+      if(keysDown[key.right]){
+       ham.x++;
+       if(ham.x > 240) ham.x = 240;
+       image.ham.act = "right";
+      } 
+      if(jump.jumped < jump.height){
+       var step = jump_easing(hamjump.jump.jumped, hamjump.jump.height);
+       ham.y -= step;
+       jump.jumped += step;
+      } else {
+       for(var i = 0; i <= block.anz; i++){
+        if(ham.x >= block.x[i] - 70 && ham.x <= block.x[i] + 45){
+         if(ham.y >= block.y[i] - 70 && ham.y <= block.y[i] - 50){
+          if(block.type[i] == 2)
+           block.visible[i] = false;
+          else {
+           jump.jumped = 0;
+           jump.falled = 0;
+           jump.height = rand(190, 210);
+           if(block.y[i] < 470){
+            hamjump.moveinterval = setInterval("hamjump.move();", 1);
+            hamjump.movedif = 470 - block.y[i];
+           }
+          }
+         }
+        } 
+       }
+       for(i = 0; i < monster.anz; i++){
+        if(monster.visible[i]){
+         if(ham.x + 100 >= monster.x[i] && ham.x <= monster.x[i] + 50){
+          if(ham.y + 70 >= monster.y[i] && ham.y <= monster.y[i] - 30){
+           jump.jumped = 0;
+           jump.falled = 0;
+           jump.height = rand(190, 210);
+           if(block.y[i] < 470){
+            hamjump.moveinterval = setInterval("hamjump.move();", 1);
+            hamjump.movedif = 470 - block.y[i];
+           }
+          }
+         }
+        }
+       }
+       if(jump.jumped != 0){
+        var step = jump_easing(jump.falled, 200);
+        ham.y += step;
+        jump.falled += step;
+       }  
+      }
+      //Fireball
+      if((key.shootl in keysDown || key.shootc in keysDown || key.shootr in keysDown) && !fireball.shooted){
+       fireball.x[fireball.anz] = ham.x + 50;
+       fireball.y[fireball.anz] = ham.y;
+       fireball.dy[fireball.anz] = 5;
+       fireball.shooted = true;
+       setTimeout("hamjump.fireball.shooted = false;", 300);
+       if(key.shootl in keysDown){fireball.dx[fireball.anz] = 2; image.ham.act = "left";}
+       if(key.shootc in keysDown) fireball.dx[fireball.anz] = 0;
+       if(key.shootr in keysDown){fireball.dx[fireball.anz] = -2; image.ham.act = "right";}
+       fireball.anz++; 
+      }
+      for(var i = 0; i < fireball.anz; i++){
+       fireball.x[i] -= fireball.dx[i];
+       fireball.y[i] -= fireball.dy[i];
+       if(fireball.x[i] < 0 || fireball.x[i] > 300 || fireball.y[i] < 0){
+        fireball.x.splice(i, 1);
+        fireball.y.splice(i, 1);
+        fireball.dx.splice(i, 1);
+        fireball.dy.splice(i, 1);
+        fireball.anz--;
+        continue;
+       }
+       for(var j = 0; j < monster.anz; j++){
+        if(fireball.x[i]+40 > monster.x[j]&&fireball.x[i] < monster.x[j]+75&&monster.visible[j]){
+         if(fireball.y[i] + 40 > monster.y[j] && fireball.y[i] < monster.y[j] + 50){
+          monster.visible[j] = false;
+          fireball.x.splice(i, 1);
+          fireball.y.splice(i, 1);
+          fireball.dx.splice(i, 1);
+          fireball.dy.splice(i, 1);
+          fireball.anz--;
+          continue; 
+         }
+        }
+       }
+      }
+     }
+    },
+    lose: function (){
+     with(hamjump){
+      if(ham.y >= 500){
+       if(keysDown[key.start]){
+        reset("game");
+       }
+      } else {
+       ham.y += 3.5;
+       if(keysDown[key.left])
+        image.act.src = image.left.src;
+       if(keysDown[key.right]) 
+        image.act.src = image.right.src;
+      }
+     }    
+    },
+    move: function (){
+     with(hamjump){
+      movedif -= 2;
+      if(movedif == 0){
+       clearInterval(hamjump.moveinterval);
+       return 0;
+      }
+      else if(movedif < 0)
+       var step = movedif + 2;
+      else
+       var step = 2;
+      score += step;
+      document.getElementById("score").innerHTML = Math.floor(score);
+      for(var i = 0; i <= monster.anz; i++)
+       monster.y[i] += step;
+      for(i = 0; i <= block.anz; i++)
+       block.y[i] += step;  
+      zoneline += step;
+      ham.y += step;
+      if(movedif < 0){
+       clearInterval(moveinterval);
+       return 0;
+      }
+     }       
+    },    
+   };
+   with(hamjump){
+    bg.addColorStop(0, "#FFFF7F");
+    bg.addColorStop(1, "#FFFFFF");  
+   }
+   with(hamjump.image){
+    ham.left = new Image();
+    ham.right = new Image();
+    ham.left.src = "links.png";
+    ham.right.src = "rechts.png";
+    monster.normal = new Image();
+    monster.normal.src = "Monster 1.png";
+   }
+   function jump_easing(w, g){
+    proz = w / g
+    if(proz <= 0.03) var step = 0.2;
+    if(proz > 0.03 && proz <= 0.07) var step = 0.6;
+    if(proz > 0.07 && proz <= 0.1) var step = 1;
+    if(proz > 0.1 && proz <= 0.2) var step = 1.5;    
+    if(proz > 0.2 && proz <= 0.3) var step = 1.7;    
+    if(hamjump.jump.jumped < hamjump.jump.height){
+     if(proz > 0.3 && proz <= 0.7) var step = 2;
+     if(proz > 0.7 && proz <= 0.8) var step = 1.7;
+     if(proz > 0.8 && proz <= 0.9) var step = 1.5;
+     if(proz > 0.9 && proz <= 0.93) var step = 1;
+     if(proz > 0.93 && proz <= 0.97) var step = 0.6;
+     if(proz > 0.97) step = 0.2;
+    } else{ 
+     if(proz > 0.3) var step = 2.2;
+     if(proz > 0.6) var step = 2.8;
+    }
+    return step;
+   } 
+   setInterval("hamjump.draw();", 10);
+   hamjump.reset("menu");
+  </script>
+ </body>
+</html>
